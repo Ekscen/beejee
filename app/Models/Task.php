@@ -28,23 +28,22 @@ class Task
     }
     public function getTasks($filter = false) {
         $stmt =  $this->link->stmt_init();
-        $stmtString = 'SELECT id, name, email, task, status FROM task';
+        $stmtString = 'SELECT id, name, email, task, status, is_edit FROM task';
         if ( $stmt->prepare($stmtString) ) {
             $result = [];
             $stmt->execute();
-            $stmt->bind_result($id, $name, $email, $task, $status);
+            $stmt->bind_result($id, $name, $email, $task, $status, $isEdit);
             while ( $stmt->fetch() ) {
                 $result[]= [
-                    'id'    => $id,
-                    'name'  => $name,
-                    'email' => $email,
-                    'task'  => $task,
-                    'status'=> $status
+                    'id'     => $id,
+                    'name'   => $name,
+                    'email'  => $email,
+                    'task'   => $task,
+                    'status' => $status,
+                    'isEdit'=> $isEdit
                 ];
             }
             return $result;
-        } else {
-            return "false";
         }
     }
 }

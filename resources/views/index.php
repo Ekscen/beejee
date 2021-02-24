@@ -11,64 +11,81 @@
 <body>
     <div class="container">
         <section id="auth" class="my-3 row">
-            <div class="col"></div>
-            <form class="col-12 col-sm-10 col-md-8 col-lg-4">
-                <div class="form-group">
-                    <label for="InputLogin">Логин</label>
-                    <input type="email" class="form-control" id="InputLogin" placeholder="Введите логин">
-                </div>
-                <div class="form-group">
-                    <label for="InputPassword">Пароль</label>
-                    <input type="password" class="form-control" id="InputPassword" placeholder="Пароль">
-                </div>
-                <div class="w-100 text-center">
-                    <button type="submit" class="btn btn-primary">Войти</button>
-                </div>
-            </form>
-            <div class="col"></div>
-            <!-- <div class="col"></div>
-            <form class="col-12 col-sm-10 col-md-8 col-lg-4">
-                <div class="w-100 text-center">
-                    <button type="submit" class="btn btn-danger">Выйти</button>
-                </div>
-            </form>
-            <div class="col"></div> -->
+            <? if (isset($data['user'])):?>
+                <div class="col"></div>
+                <form action="\logOut" method="POST" class="col-12 col-sm-10 col-md-8 col-lg-4">
+                    <div class="w-100 text-center">
+                        <button type="submit" class="btn btn-danger">Выйти</button>
+                    </div>
+                </form>
+                <div class="col"></div>
+            <? else: ?>
+                <div class="col"></div>
+                <form action="\logIn" method="POST" class="col-12 col-sm-10 col-md-8 col-lg-4">
+                    <div class="form-group">
+                        <label for="InputLogin">Логин</label>
+                        <input type="text" name="login" required class="form-control" id="InputLogin" placeholder="Введите логин">
+                    </div>
+                    <div class="form-group">
+                        <label for="InputPassword">Пароль</label>
+                        <input type="password" name="password" required class="form-control" id="InputPassword" placeholder="Пароль">
+                    </div>
+                    <? if (isset($data['loginError'])) : ?>
+                        <div class='alert alert-danger w-100' role='alert'><?=$data['loginError']?></div>
+                    <? endif; ?>
+                    <div class="w-100 text-center">
+                        <button type="submit" class="btn btn-primary">Войти</button>
+                    </div>
+                </form>
+                <div class="col"></div>
+            <?endif;?>
         </section>
         <section id="table-task" class="my-3 row">
-            <?= isset($data['success']) ? "<div class='alert alert-success w-100' role='alert'>{$data['success']}</div>" : ""?>
-            <table class="table table-responsive w-100 d-block d-md-table">
+            <? if (isset($data['success'])) : ?>
+                <div class='alert alert-success w-100' role='alert'><?=$data['success']?></div>
+            <? endif; ?>
+            <table class="table table-responsive-sm">
                 <thead class="thead-dark">
                     <tr>
-                    <th scope="col">Имя пользователя</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Текст задачи</th>
-                    <th scope="col">Статус</th>
+                        <th class="text-center" scope="col">Имя пользователя</th>
+                        <th class="text-center" scope="col">Email</th>
+                        <th class="text-center" scope="col">Текст задачи</th>
+                        <th class="text-center" scope="col">Статус</th>
                     </tr>
                 </thead>
                 <tbody>
                     <? foreach ($data["tasks"] as $task): ?>
                     <tr>
-                        <td><?=$task['name']?></td>
-                        <td><?=$task['email']?></td>
-                        <td><?=$task['task']?></td>
-                        <td><?=$task['status']?></td>
+                        <td class="text-center"><?=$task['name']?></td>
+                        <td class="text-center"><?=$task['email']?></td>
+                        <td class="text-center"><?=$task['task']?></td>
+                        <td class="d-flex flex-column align-items-center">
+                            <? if ($task['status'] === 1): ?>
+                                <span class="text-success">Выполнено</span>
+                            <? else: ?>
+                                <span class="text-warning">Новая</span>
+                            <? endif; ?>
+                            <? if ($task['isEdit'] === 1): ?>
+                                <span class="text-info">Отредактировано</span>
+                            <? endif; ?>
+                        </td>
                     </tr>
                     <? endforeach;?>
                     <form action="\putTask" method="POST">
                         <tr>
-                            <td>
+                            <td class="text-center">
                                 <input type="text" name="name" value="<?= isset($data['formData']['name']) ? $data['formData']['name'] : ""?>">
                                 <?= isset($data['errors']['name']) ? "<div class='text-danger'>{$data['errors']['name']}</div>" : ""?>
                             </td>
-                            <td>
+                            <td class="text-center">
                                 <input type="email" name="email" value="<?= isset($data['formData']['email']) ? $data['formData']['email'] : ""?>">
                                 <?= isset($data['errors']['email']) ? "<div class='text-danger'>{$data['errors']['email']}</div>" : ""?>
                             </td>
-                            <td>
+                            <td class="text-center">
                                 <input type="text" name="task" value="<?= isset($data['formData']['task']) ? $data['formData']['task'] : ""?>">
                                 <?= isset($data['errors']['task']) ? "<div class='text-danger'>{$data['errors']['task']}</div>" : ""?>
                             </td>
-                            <td><button type="submit" class="btn btn-primary">Опубликовать</button></td>
+                            <td class="text-center"><button type="submit" class="btn btn-primary">Опубликовать</button></td>
                         </tr>
                     </form>
                 </tbody>

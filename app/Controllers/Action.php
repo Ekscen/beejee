@@ -1,15 +1,17 @@
 <?php
 use Model\Task;
+use Model\User;
 
 class Action
 {
     public function __construct() {
         $this->view = new View();
-        $this->modelTask = new Task();
+        $this->Task = new Task();
+        $this->User = new User();
         session_start();
     }
     public function index () {
-        $tasks = $this->modelTask->getTasks();
+        $tasks = $this->Task->getTasks();
         $data['tasks'] = $tasks;
         $data = $this->getDataFromSession($data);
         $this->view->showIndex($data);
@@ -25,43 +27,65 @@ class Action
             $errors = $this->validate($data);
             
             if (!empty($errors)) {
-                $_SESSION['formData'] = $data;
-                $_SESSION['errors'] = $errors;
+                $_SESSION['fast']['formData'] = $data;
+                $_SESSION['fast']['errors'] = $errors;
             }
-            elseif ( $this->modelTask->putTask($data) ) {
-                $_SESSION['success'] = "Задача создана успешно";
+            elseif ( $this->Task->putTask($data) ) {
+                $_SESSION['fast']['success'] = "Задача создана успешно";
             }
             header('Location: /');
         }
     }
 
-    public function validate ($data) {
+    public function logIn() {
+        $data['login']     = trim(htmlspecialchars($_POST['login']));
+        $data['password']  = md5(trim(htmlspecialchars($_POST['password'])));
+        if ($user = $this->User->logIn($data)) {
+            $_SESSION['user'] = [
+                'id'            => $user['id'],
+                'login'         => $user['login'],
+                'isAdmin'       => true
+            ];
+        } else {
+            $_SESSION['fast']['loginError'] = "Данные авторизации не верны";
+        }
+        header('Location: /');
+    }
+    public function logOut() {
+        if (isset($_SESSION['user'])) {
+            unset($_SESSION['user']);
+        }
+        header('Location: /');
+    }
+
+    private function validate ($data) {
         $errors = [];
-        if ( !filter_var($data['email'], FILTER_VALIDATE_EMAIL) ){
+        if (isset($data['email']) && !filter_var($data['email'], FILTER_VALIDATE_EMAIL) ){
             $errors['email'] = "Неверно указан эмейл";
         }
-        if ( !$data['name'] ) {
+        if (isset($data['name']) && !$data['name'] ) {
             $errors['name'] = "Укажите имя";
         }
-        if ( !$data['task'] ) {
+        if (isset($data['task']) && !$data['task'] ) {
             $errors['task'] = "Напишите задание";
         }
         return $errors;
     }
 
-    public function getDataFromSession ($data) {
-        if (!empty($_SESSION["errors"])) {
-            $data['errors'] = $_SESSION["errors"];
-            unset( $_SESSION["errors"] );
+    private function getDataFromSession ($data) {
+        if (isset($_SESSION['fast'])){
+            foreach ($_SESSION['fast'] as $key => $value) {
+                $data[$key] = $value;
+            }
+            unset($_SESSION['fast']);
         }
-        if (!empty($_SESSION["success"])) {
-            $data['success'] = $_SESSION["success"];
-            unset( $_SESSION["success"] );
-        }
-        if (!empty($_SESSION["formData"])) {
-            $data['formData'] = $_SESSION["formData"];
-            unset( $_SESSION["formData"] );
+        if (!empty($_SESSION["user"])) {
+            $data['user'] = $_SESSION["user"];
         }
         return $data;
+    }
+
+    public function __call($name, $arguments) {
+        header('Location: /');
     }
 }
