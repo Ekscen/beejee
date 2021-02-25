@@ -13,7 +13,7 @@
         <section id="auth" class="my-3 row">
             <? if (isset($data['user'])):?>
                 <div class="col"></div>
-                <form action="\logOut" method="POST" class="col-12 col-sm-10 col-md-8 col-lg-4">
+                <form action="\logOut" method="post" class="col-12 col-sm-10 col-md-8 col-lg-4">
                     <div class="w-100 text-center">
                         <button type="submit" class="btn btn-danger">Выйти</button>
                     </div>
@@ -21,7 +21,7 @@
                 <div class="col"></div>
             <? else: ?>
                 <div class="col"></div>
-                <form action="\logIn" method="POST" class="col-12 col-sm-10 col-md-8 col-lg-4">
+                <form action="\logIn" method="post" class="col-12 col-sm-10 col-md-8 col-lg-4">
                     <div class="form-group">
                         <label for="InputLogin">Логин</label>
                         <input type="text" name="login" required class="form-control" id="InputLogin" placeholder="Введите логин">
@@ -64,6 +64,13 @@
                                 <span class="text-success">Выполнено</span>
                             <? else: ?>
                                 <span class="text-warning">Новая</span>
+                                <? if (isset($data['user']) && $data['user']['isAdmin'] ): ?>
+                                    <form action="\completeTask" method="post">
+                                        <button type="submit" name="id" value="<?=$task['id']?>" class="btn btn-dark">
+                                            Выполнено
+                                        </button>
+                                    </form>
+                                <? endif; ?>
                             <? endif; ?>
                             <? if ($task['isEdit'] === 1): ?>
                                 <span class="text-info">Отредактировано</span>
@@ -71,7 +78,7 @@
                         </td>
                     </tr>
                     <? endforeach;?>
-                    <form action="\putTask" method="POST">
+                    <form action="\putTask" method="post">
                         <tr>
                             <td class="text-center">
                                 <input type="text" name="name" value="<?= isset($data['formData']['name']) ? $data['formData']['name'] : ""?>">

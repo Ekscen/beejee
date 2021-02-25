@@ -26,6 +26,16 @@ class Task
             return true;
         }
     }
+    public function setTaskAsComplete ($id) {
+        $stmt =  $this->link->stmt_init();
+        $stmtString = 'UPDATE task SET status = 1 WHERE id=?';
+        if ( $stmt->prepare($stmtString) ) {
+            $stmt->bind_param('i', $id);
+            $stmt->execute();
+            $stmt->close();
+            return true;
+        }
+    }
     public function getTasks($filter = false) {
         $stmt =  $this->link->stmt_init();
         $stmtString = 'SELECT id, name, email, task, status, is_edit FROM task';
