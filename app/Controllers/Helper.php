@@ -36,7 +36,7 @@ class Helper
     }
 
     static function getFilterData () {
-        $limit = 3;
+        $limit = 5;
         $data['filter']['page']  = $_SESSION['filter']['page'] ?? 1;
         $order = $_SESSION['filter']['order'] ?? false;
         $offset = ($data['filter']['page'] - 1)*$limit;
