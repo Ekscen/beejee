@@ -22,8 +22,9 @@ class Task
         if ( $stmt->prepare($stmtString) ) {
             $stmt->bind_param("ssss", $data['name'], $data['email'], $data['task'], $data['status']);
             $stmt->execute();
+            $result = $stmt->affected_rows;
             $stmt->close();
-            return true;
+            return $result;
         }
     }
     public function editTask ($data) {
@@ -32,8 +33,9 @@ class Task
         if ( $stmt->prepare($stmtString) ) {
             $stmt->bind_param("si", $data['task'], $data['id']);
             $stmt->execute();
+            $result = $stmt->affected_rows;
             $stmt->close();
-            return true;
+            return $result;
         }
     }
     public function setTaskAsComplete ($id) {
@@ -42,15 +44,21 @@ class Task
         if ( $stmt->prepare($stmtString) ) {
             $stmt->bind_param('i', $id);
             $stmt->execute();
+            $result = $stmt->affected_rows;
             $stmt->close();
-            return true;
+            return $result;
         }
     }
-    public function getTasks($filter = false) {
+    public function getTasks($filter) {
         $stmt =  $this->link->stmt_init();
-        $stmtString = 'SELECT SQL_CALC_FOUND_ROWS id, name, email, task, status, is_edit FROM task LIMIT 5';
+        $stmtString = "SELECT SQL_CALC_FOUND_ROWS id, name, email, task, status, is_edit FROM task";
+        if ($filter['order']){
+            $stmtString .= " ORDER BY {$filter['order']['by']} {$filter['order']['sortOrder']}";
+        }
+        $stmtString .= " LIMIT ? OFFSET ?";
         if ( $stmt->prepare($stmtString) ) {
             $result = [];
+            $stmt->bind_param('ii', $filter['limit'], $filter['offset']);
             $stmt->execute();
             $stmt->bind_result($id, $name, $email, $task, $status, $isEdit);
             while ( $stmt->fetch() ) {

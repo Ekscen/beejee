@@ -1,0 +1,4 @@
+svg:hover {
+    cursor: pointer;
+    filter: brightness(0.5);
+}

@@ -16,7 +16,8 @@ class Helper
         return $errors;
     }
 
-    static function getDataFromSession ($data) {
+    static function getDataFromSession () {
+        $data = [];
         if (isset($_SESSION['fast'])){
             foreach ($_SESSION['fast'] as $key => $value) {
                 $data[$key] = $value;
@@ -26,7 +27,24 @@ class Helper
         if (!empty($_SESSION["user"])) {
             $data['user'] = $_SESSION["user"];
         }
+        if (!empty($_SESSION['filter'])) {
+            foreach ($_SESSION['filter'] as $key => $value) {
+                $data['filter'][$key] = $value;
+            }
+        }
         return $data;
+    }
+
+    static function getFilterData () {
+        $limit = 3;
+        $data['filter']['page']  = $_SESSION['filter']['page'] ?? 1;
+        $order = $_SESSION['filter']['order'] ?? false;
+        $offset = ($data['filter']['page'] - 1)*$limit;
+        return [
+            'limit'  => $limit,
+            'offset' => $offset,
+            'order'  => $order
+        ];
     }
 
     static function prepareData ($data) {

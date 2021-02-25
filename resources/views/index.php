@@ -14,7 +14,7 @@
         <section id="auth" class="my-3 row">
             <? if (isset($data['user'])):?>
                 <div class="col"></div>
-                <form action="\logOut" method="post" class="col-12 col-sm-10 col-md-8 col-lg-4">
+                <form action="/logOut" method="post" class="col-12 col-sm-10 col-md-8 col-lg-4">
                     <div class="w-100 text-center">
                         <button type="submit" name="logOut" class="btn btn-danger">Выйти</button>
                     </div>
@@ -22,7 +22,7 @@
                 <div class="col"></div>
             <? else: ?>
                 <div class="col"></div>
-                <form action="\logIn" method="post" class="col-12 col-sm-10 col-md-8 col-lg-4">
+                <form action="/logIn" method="post" class="col-12 col-sm-10 col-md-8 col-lg-4">
                     <div class="form-group">
                         <label for="InputLogin">Логин</label>
                         <input type="text" name="login" required class="form-control" id="InputLogin" placeholder="Введите логин">
@@ -48,10 +48,50 @@
             <table class="table table-responsive-sm">
                 <thead class="thead-dark">
                     <tr>
-                        <th class="text-center" scope="col">Имя пользователя</th>
-                        <th class="text-center" scope="col">Email</th>
-                        <th class="text-center" scope="col">Текст задачи</th>
-                        <th class="text-center" scope="col">Статус</th>
+                        <th class="text-center" scope="col" name="name">
+                            <span>
+                                Имя пользователя
+                            </span>
+                            <svg width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                            </svg>
+                            <svg width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                                <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                            </svg>
+                        </th>
+                        <th class="text-center" scope="col" name="email">
+                            <span>
+                                Почта
+                            </span>
+                            <svg width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                            </svg>
+                            <svg width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                                <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                            </svg>
+                        </th>
+                        <th class="text-center" scope="col" name="task">
+                            <span>
+                                Текст задачи
+                            </span>
+                            <svg width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                            </svg>
+                            <svg width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                                <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                            </svg>
+                        </th>
+                        <th class="text-center" scope="col" name="status">
+                            <span>
+                                Статус
+                            </span>
+                            <svg width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                                <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                            </svg>
+                            <svg width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                                <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                            </svg>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,7 +103,7 @@
                             <div class="d-flex flex-column align-items-center">
                                 <span><?=$task['task']?></span>
                                 <? if (isset($data['user']) && $data['user']['isAdmin'] ): ?>
-                                    <form class="d-none" action="\editTask" method="post">
+                                    <form class="d-none" action="/editTask" method="post">
                                         <input class="form-control" type="text" name="task" value="">
                                         <button class="btn btn-dark mt-2" type="submit" name="id" value="<?=$task['id']?>">Применить</button>
                                         <button class="btn btn-dark mt-2" type="button" data-action='editTaskStop'>Отмена</button>
@@ -79,7 +119,7 @@
                                 <? else: ?>
                                     <span class="text-warning order-0">Новая</span>
                                     <? if (isset($data['user']) && $data['user']['isAdmin'] ): ?>
-                                        <form class="order-2" action="\completeTask" method="post">
+                                        <form class="order-2" action="/completeTask" method="post">
                                             <button class="btn btn-dark mt-2" type="submit" name="id" value="<?=$task['id']?>">Выполнено</button>
                                         </form>
                                     <? endif; ?>
@@ -91,7 +131,7 @@
                         </td>
                     </tr>
                     <? endforeach;?>
-                    <form action="\putTask" method="post">
+                    <form action="/putTask" method="post">
                         <tr>
                             <td class="text-center">
                                 <input type="text" class="form-control" name="name" value="<?= isset($data['formData']['name']) ? $data['formData']['name'] : ""?>">
@@ -111,25 +151,23 @@
                 </tbody>
             </table>
         </section>
-        <section id="nav">
-            <nav aria-label="Page navigation example">
-            <ul class="pagination">
-                <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-                </li>
-            </ul>
-            </nav>
-        </section>
+        <?if ($data['tasks']['countPagination'] > 1):?>
+            <section id="nav">
+                <nav aria-label="Page navigation example">
+                    <form action="/setPage" method="post">
+                        <ul class="pagination">
+                            <? for ($i=1; $i<=$data['tasks']['countPagination']; $i++): ?>
+                                <? if ($i == $data['filter']['page']):?>
+                                    <li class="page-item"><button class="page-link" disabled><?=$i?></button></li>
+                                <?else:?>
+                                    <li class="page-item"><button class="page-link" type="submit" name="page" value="<?=$i?>"><?=$i?></button></li>
+                                <?endif;?>
+                            <? endfor; ?>
+                        </ul>
+                    </form>
+                </nav>
+            </section>
+        <?endif;?>
     </div>
 <script src="assets/js/script.js?<?=time()?>"></script>
 </body>

@@ -12,23 +12,25 @@ class Action
     }
 
     public function index () {
-        $tasks = $this->Task->getTasks();
+        $data = Helper::getDataFromSession();
+        $filter = Helper::getFilterData();
+        $tasks = $this->Task->getTasks($filter);
         $data['tasks'] = $tasks;
-        $data = Helper::getDataFromSession($data);
+        $data['tasks']['countPagination'] = ceil($data['tasks']['count']/$filter['limit']);
         $this->view->showIndex($data);
     }
     public function putTask() {
-            $data = Helper::prepareData($_POST);
-            $data['status'] = 0;
+        $data = Helper::prepareData($_POST);
+        $data['status'] = 0;
 
-            $errors = Helper::validate($data);
-            if (!empty($errors)) {
-                $_SESSION['fast']['formData'] = $data;
-                $_SESSION['fast']['errors'] = $errors;
-            }
-            elseif ( $this->Task->putTask($data) ) {
-                $_SESSION['fast']['success'] = "Задача создана успешно";
-            }
+        $errors = Helper::validate($data);
+        if (!empty($errors)) {
+            $_SESSION['fast']['formData'] = $data;
+            $_SESSION['fast']['errors'] = $errors;
+        }
+        elseif ( $this->Task->putTask($data) ) {
+            $_SESSION['fast']['success'] = "Задача создана успешно";
+        }
     }
     public function completeTask() {
         if (isset($_SESSION['user']) && $_SESSION['user']['isAdmin']) {
@@ -52,6 +54,16 @@ class Action
             $_SESSION['fast']['loginError'] = "Необходимо войти";
         }
     }
+    public function setPage() {
+        $_SESSION['filter']['page'] = $_POST['page'];
+    }
+    public function setOrder() {
+        $_SESSION['filter']['order'] = [
+            'by'        => $_POST['orderBy'], 
+            'sortOrder' => $_POST['sortOrder']
+        ];
+        die;
+    }
 
     public function logIn() {
         $data = Helper::prepareData($_POST);
@@ -72,7 +84,6 @@ class Action
         if (isset($_SESSION['user'])) {
             unset($_SESSION['user']);
         }
-        header('Location: /');
     }
 
     public function __call($name, $arguments) {
