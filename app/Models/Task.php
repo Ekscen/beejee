@@ -26,6 +26,16 @@ class Task
             return true;
         }
     }
+    public function editTask ($data) {
+        $stmt =  $this->link->stmt_init();
+        $stmtString = 'UPDATE task SET task=?, is_edit=1 WHERE id=?';
+        if ( $stmt->prepare($stmtString) ) {
+            $stmt->bind_param("si", $data['task'], $data['id']);
+            $stmt->execute();
+            $stmt->close();
+            return true;
+        }
+    }
     public function setTaskAsComplete ($id) {
         $stmt =  $this->link->stmt_init();
         $stmtString = 'UPDATE task SET status = 1 WHERE id=?';
@@ -38,22 +48,31 @@ class Task
     }
     public function getTasks($filter = false) {
         $stmt =  $this->link->stmt_init();
-        $stmtString = 'SELECT id, name, email, task, status, is_edit FROM task';
+        $stmtString = 'SELECT SQL_CALC_FOUND_ROWS id, name, email, task, status, is_edit FROM task LIMIT 5';
         if ( $stmt->prepare($stmtString) ) {
             $result = [];
             $stmt->execute();
             $stmt->bind_result($id, $name, $email, $task, $status, $isEdit);
             while ( $stmt->fetch() ) {
-                $result[]= [
+                $tasks[]= [
                     'id'     => $id,
                     'name'   => $name,
                     'email'  => $email,
                     'task'   => $task,
                     'status' => $status,
-                    'isEdit'=> $isEdit
+                    'isEdit' => $isEdit,
                 ];
             }
-            return $result;
+            $stmtString = 'SELECT FOUND_ROWS()';
+            $stmt->prepare($stmtString);
+            $stmt->execute();
+            $stmt->bind_result($count);
+            $stmt->fetch();
+            $stmt->close();
+            return [
+                'fields' => $tasks,
+                'count' => $count
+            ];
         }
     }
 }

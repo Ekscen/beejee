@@ -8,11 +8,14 @@ class Router
     }
 
     public function redirectToContent () {
-        if ($this->request[1] === "") {
+        $method = $this->request[1];
+        if ($method === "") {
             $this->action->index();
         } else {
-            $method = $this->request[1];
-            $this->action->$method();
+            if (!empty($_POST)) {
+                $this->action->$method();
+            }
+            header('Location: /');
         }
     }
 }

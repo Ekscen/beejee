@@ -7,6 +7,7 @@
     <title>TestTask</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/css/style.css?<?=time()?>">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -15,7 +16,7 @@
                 <div class="col"></div>
                 <form action="\logOut" method="post" class="col-12 col-sm-10 col-md-8 col-lg-4">
                     <div class="w-100 text-center">
-                        <button type="submit" class="btn btn-danger">Выйти</button>
+                        <button type="submit" name="logOut" class="btn btn-danger">Выйти</button>
                     </div>
                 </form>
                 <div class="col"></div>
@@ -54,42 +55,54 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <? foreach ($data["tasks"] as $task): ?>
+                    <? foreach ($data['tasks']['fields'] as $task): ?>
                     <tr>
                         <td class="text-center"><?=$task['name']?></td>
                         <td class="text-center"><?=$task['email']?></td>
-                        <td class="text-center"><?=$task['task']?></td>
-                        <td class="d-flex flex-column align-items-center">
-                            <? if ($task['status'] === 1): ?>
-                                <span class="text-success">Выполнено</span>
-                            <? else: ?>
-                                <span class="text-warning">Новая</span>
+                        <td>
+                            <div class="d-flex flex-column align-items-center">
+                                <span><?=$task['task']?></span>
                                 <? if (isset($data['user']) && $data['user']['isAdmin'] ): ?>
-                                    <form action="\completeTask" method="post">
-                                        <button type="submit" name="id" value="<?=$task['id']?>" class="btn btn-dark">
-                                            Выполнено
-                                        </button>
+                                    <form class="d-none" action="\editTask" method="post">
+                                        <input class="form-control" type="text" name="task" value="">
+                                        <button class="btn btn-dark mt-2" type="submit" name="id" value="<?=$task['id']?>">Применить</button>
+                                        <button class="btn btn-dark mt-2" type="button" data-action='editTaskStop'>Отмена</button>
                                     </form>
+                                    <button class="btn btn-dark mt-2" data-action='editTask'>Редактировать</button>
                                 <? endif; ?>
-                            <? endif; ?>
-                            <? if ($task['isEdit'] === 1): ?>
-                                <span class="text-info">Отредактировано</span>
-                            <? endif; ?>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-column align-items-center">
+                                <? if ($task['status'] === 1): ?>
+                                    <span class="text-success order-0">Выполнено</span>
+                                <? else: ?>
+                                    <span class="text-warning order-0">Новая</span>
+                                    <? if (isset($data['user']) && $data['user']['isAdmin'] ): ?>
+                                        <form class="order-2" action="\completeTask" method="post">
+                                            <button class="btn btn-dark mt-2" type="submit" name="id" value="<?=$task['id']?>">Выполнено</button>
+                                        </form>
+                                    <? endif; ?>
+                                <? endif; ?>
+                                <? if ($task['isEdit'] === 1): ?>
+                                    <span class="text-info order-1">Отредактировано</span>
+                                <? endif; ?>
+                            </div>
                         </td>
                     </tr>
                     <? endforeach;?>
                     <form action="\putTask" method="post">
                         <tr>
                             <td class="text-center">
-                                <input type="text" name="name" value="<?= isset($data['formData']['name']) ? $data['formData']['name'] : ""?>">
+                                <input type="text" class="form-control" name="name" value="<?= isset($data['formData']['name']) ? $data['formData']['name'] : ""?>">
                                 <?= isset($data['errors']['name']) ? "<div class='text-danger'>{$data['errors']['name']}</div>" : ""?>
                             </td>
                             <td class="text-center">
-                                <input type="email" name="email" value="<?= isset($data['formData']['email']) ? $data['formData']['email'] : ""?>">
+                                <input type="email" class="form-control" name="email" value="<?= isset($data['formData']['email']) ? $data['formData']['email'] : ""?>">
                                 <?= isset($data['errors']['email']) ? "<div class='text-danger'>{$data['errors']['email']}</div>" : ""?>
                             </td>
                             <td class="text-center">
-                                <input type="text" name="task" value="<?= isset($data['formData']['task']) ? $data['formData']['task'] : ""?>">
+                                <input type="text" class="form-control" name="task" value="<?= isset($data['formData']['task']) ? $data['formData']['task'] : ""?>">
                                 <?= isset($data['errors']['task']) ? "<div class='text-danger'>{$data['errors']['task']}</div>" : ""?>
                             </td>
                             <td class="text-center"><button type="submit" class="btn btn-primary">Опубликовать</button></td>
@@ -118,5 +131,6 @@
             </nav>
         </section>
     </div>
+<script src="assets/js/script.js?<?=time()?>"></script>
 </body>
 </html>

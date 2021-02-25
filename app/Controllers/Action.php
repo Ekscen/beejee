@@ -18,7 +18,6 @@ class Action
         $this->view->showIndex($data);
     }
     public function putTask() {
-        if (!empty($_POST)) {
             $data = Helper::prepareData($_POST);
             $data['status'] = 0;
 
@@ -30,31 +29,28 @@ class Action
             elseif ( $this->Task->putTask($data) ) {
                 $_SESSION['fast']['success'] = "Задача создана успешно";
             }
-        }
-        header('Location: /');
     }
     public function completeTask() {
-        if (!empty($_POST)) {
-            if (isset($_SESSION['user']) && $_SESSION['user']['isAdmin']) {
-                $data = Helper::prepareData($_POST);
-                if ($this->Task->setTaskAsComplete($data['id'])) {
-                    $_SESSION['fast']['success'] = "Задача отмечена выполненной";
-                }
-            } 
-            else {
-                $_SESSION['fast']['loginError'] = "Необходимо войти";
+        if (isset($_SESSION['user']) && $_SESSION['user']['isAdmin']) {
+            $data = Helper::prepareData($_POST);
+            if ($this->Task->setTaskAsComplete($data['id'])) {
+                $_SESSION['fast']['success'] = "Задача отмечена выполненной";
             }
         } 
-        header('Location: /');
+        else {
+            $_SESSION['fast']['loginError'] = "Необходимо войти";
+        }
     }
     public function editTask() {
-        if (!empty($_POST)) {
-            echo '<pre>';
-            print_r($_POST);
-            echo '</pre>';
-            die;
+        if (isset($_SESSION['user']) && $_SESSION['user']['isAdmin']) {
+            $data = Helper::prepareData($_POST);
+            if ($this->Task->editTask($data)) {
+                $_SESSION['fast']['success'] = "Задача отредактирована";
+            }
         }
-        header('Location: /');
+        else {
+            $_SESSION['fast']['loginError'] = "Необходимо войти";
+        }
     }
 
     public function logIn() {
@@ -71,7 +67,6 @@ class Action
         else {
             $_SESSION['fast']['loginError'] = "Данные авторизации не верны";
         }
-        header('Location: /');
     }
     public function logOut() {
         if (isset($_SESSION['user'])) {
