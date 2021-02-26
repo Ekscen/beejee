@@ -7,9 +7,6 @@ class User
     {
         require("Model.txt");
         $this->link = mysqli_connect($data['host'], $data['user'], $data['pass'], $data['base']);
-        if (mysqli_connect_error()) {
-            die ('Ошибка подключения ('.mysqli_connect_error().')'.mysqli_connect_error());
-        }
         mysqli_set_charset($this->link, "utf8");
     }
     public function __destruct()
