@@ -15,6 +15,8 @@ class Action
         $data = Helper::getDataFromSession();
         $filter = Helper::getFilterData();
         $tasks = $this->Task->getTasks($filter);
+        
+        $data['filter'] = $filter;
         $data['tasks'] = $tasks;
         $data['tasks']['countPagination'] = ceil($data['tasks']['count']/$filter['limit']);
         $this->view->showIndex($data);

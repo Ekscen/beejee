@@ -27,20 +27,16 @@ class Helper
         if (!empty($_SESSION["user"])) {
             $data['user'] = $_SESSION["user"];
         }
-        if (!empty($_SESSION['filter'])) {
-            foreach ($_SESSION['filter'] as $key => $value) {
-                $data['filter'][$key] = $value;
-            }
-        }
         return $data;
     }
 
     static function getFilterData () {
         $limit = 5;
-        $data['filter']['page']  = $_SESSION['filter']['page'] ?? 1;
-        $order = $_SESSION['filter']['order'] ?? false;
-        $offset = ($data['filter']['page'] - 1)*$limit;
+        $page  = $_SESSION['filter']['page'] ?? 1;
+        $order = $_SESSION['filter']['order'] ?? [ "by" => false, "sortOrder" => "ASC"];
+        $offset = ($page - 1)*$limit;
         return [
+            'page'   => $page,
             'limit'  => $limit,
             'offset' => $offset,
             'order'  => $order

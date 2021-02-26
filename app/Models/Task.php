@@ -52,12 +52,12 @@ class Task
     public function getTasks($filter) {
         $stmt =  $this->link->stmt_init();
         $stmtString = "SELECT SQL_CALC_FOUND_ROWS id, name, email, task, status, is_edit FROM task";
-        if ($filter['order']){
+        if ($filter['order']['by']){
             $stmtString .= " ORDER BY {$filter['order']['by']} {$filter['order']['sortOrder']}";
         }
         $stmtString .= " LIMIT ? OFFSET ?";
         if ( $stmt->prepare($stmtString) ) {
-            $result = [];
+            $tasks = [];
             $stmt->bind_param('ii', $filter['limit'], $filter['offset']);
             $stmt->execute();
             $stmt->bind_result($id, $name, $email, $task, $status, $isEdit);
