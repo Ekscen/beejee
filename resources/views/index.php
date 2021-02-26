@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TestTask</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?<?=time()?>">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
@@ -117,7 +117,7 @@
                                 <? if (isset($data['user']) && $data['user']['isAdmin'] ): ?>
                                     <form class="d-none" action="/editTask" method="post">
                                         <input class="form-control" type="text" name="task" value="">
-                                        <button class="btn btn-dark mt-2" type="submit" name="id" value="<?=$task['id']?>">Применить</button>
+                                        <button class="btn btn-dark mt-2" type="submit" name="id" value="<?=$task['id']?>" data-action='editTaskStart'">Применить</button>
                                         <button class="btn btn-dark mt-2" type="button" data-action='editTaskStop'>Отмена</button>
                                     </form>
                                     <button class="btn btn-dark mt-2" data-action='editTask'>Редактировать</button>
@@ -181,6 +181,6 @@
             </section>
         <?endif;?>
     </div>
-<script src="assets/js/script.js"></script>
+<script src="assets/js/script.js?<?=time()?>"></script>
 </body>
 </html>
